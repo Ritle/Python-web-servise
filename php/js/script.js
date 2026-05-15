@@ -1,16 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация
-    initTabs();
-    setupEventListeners();
-    checkApiStatus();
-    loadLogs();
-    loadMetrics();
-    
-    // Периодическое обновление
-    setInterval(loadLogs, 30000); // Каждые 30 секунд
-    setInterval(loadMetrics, 60000); // Каждую минуту
-    
-    // Функции инициализации
+    // Инициализация табов
     function initTabs() {
         // Табы тест-кейсов
         document.querySelectorAll('.tab-navigation .tab').forEach(tab => {
@@ -57,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Настройка обработчиков событий
     function setupEventListeners() {
         // Обработчики кнопок
         document.getElementById('sendRequestBtn').addEventListener('click', sendCurrentRequest);
@@ -82,18 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 showTestCaseDetails(testCase);
             });
         });
-        
-        // Обработчик выбора вкладки тест-кейсов
-        document.querySelectorAll('.tab-navigation .tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.getAttribute('data-tab');
-                
-                // Скрываем детали, если переключаемся на другую категорию
-                if (!document.querySelector(`.test-case[data-tab="${tabName}"].active`)) {
-                    document.getElementById('case-details').classList.add('hidden');
-                }
-            });
-        });
     }
     
     // Основные функции
@@ -105,21 +83,20 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => {
                 const apiStatus = document.querySelector('.api-status');
                 if (response.ok) {
-                    statusElement.innerHTML = '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> API работает нормально</span>';
+                    statusElement.innerHTML = '<span style="color: var(--success);">API работает нормально</span>';
                     apiStatus.className = 'api-status status-ok';
                     apiStatus.textContent = 'API доступен';
                 } else {
-                    statusElement.innerHTML = '<span style="color: var(--warning);"><i class="fas fa-exclamation-triangle"></i> API отвечает, но с ошибкой</span>';
+                    statusElement.innerHTML = '<span style="color: var(--warning);">API отвечает, но с ошибкой</span>';
                     apiStatus.className = 'api-status status-warning';
                     apiStatus.textContent = 'API с проблемами';
                 }
             })
             .catch(error => {
                 const apiStatus = document.querySelector('.api-status');
-                statusElement.innerHTML = '<span style="color: var(--danger);"><i class="fas fa-times-circle"></i> API недоступен</span>';
+                statusElement.innerHTML = '<span style="color: var(--danger);">API недоступен</span>';
                 apiStatus.className = 'api-status status-error';
                 apiStatus.textContent = 'API недоступен';
-                showNotification('Ошибка подключения к API. Проверьте настройки сервера.', 'error');
             });
     }
     
@@ -133,12 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         noLogs.style.display = 'none';
         
         fetch('http://test-as1.ams-dev.ru/logs')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 logsLoading.style.display = 'none';
                 
@@ -173,64 +145,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 logsContainer.innerHTML = logsHTML;
                 logsContainer.style.display = 'block';
-                
-                // Добавляем обработчик клика на логи
-                document.querySelectorAll('.log-entry').forEach(log => {
-                    log.addEventListener('click', function() {
-                        const timestamp = this.getAttribute('data-timestamp');
-                        showLogDetails(timestamp);
-                    });
-                });
             })
             .catch(error => {
                 logsLoading.style.display = 'none';
                 noLogs.style.display = 'block';
                 noLogs.innerHTML = `<p>Ошибка загрузки логов: ${error.message}</p>`;
-                showNotification('Не удалось загрузить логи: ' + error.message, 'error');
-            });
-    }
-    
-    function loadMetrics() {
-        fetch('http://test-as1.ams-dev.ru/logs')
-            .then(response => response.json())
-            .then(data => {
-                // Общее количество запросов
-                document.getElementById('total-requests').textContent = data.logs ? data.logs.length : 0;
-                
-                // Расчет успешных запросов
-                if (data.logs && data.logs.length > 0) {
-                    const successCount = data.logs.filter(log => log.status_code === 200).length;
-                    const successRate = Math.round((successCount / data.logs.length) * 100);
-                    const errorRate = 100 - successRate;
-                    
-                    document.getElementById('success-rate').textContent = `${successRate}%`;
-                    document.getElementById('error-rate').textContent = `${errorRate}%`;
-                    
-                    // Последний запрос
-                    const lastLog = data.logs[0];
-                    const date = new Date(lastLog.timestamp);
-                    document.getElementById('last-request').textContent = 
-                        date.toLocaleTimeString();
-                    
-                    // Количество записей
-                    document.getElementById('log-count').textContent = data.logs.length;
-                    
-                    // Среднее время ответа (заглушка, так как у нас нет этой информации)
-                    document.getElementById('avg-response').textContent = "50 ms";
-                }
-            })
-            .catch(error => {
-                console.error("Ошибка загрузки метрик:", error);
             });
     }
     
     function clearLogs() {
-        if (!confirm('Вы действительно хотите очистить все логи? Это действие нельзя отменить.')) {
-            return;
-        }
-        
-        // В нашем случае мы не можем очистить логи через API, так как нет такого эндпоинта
-        showNotification('Очистка логов не поддерживается через API. Для очистки пересоздайте контейнер.', 'info');
+        // В нашем случае мы не можем очистить логи через API
+        alert('Очистка логов не поддерживается через API. Для очистки пересоздайте контейнер.');
     }
     
     function sendCurrentRequest() {
@@ -263,15 +188,13 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             jsonData = JSON.parse(document.getElementById('processData').value);
         } catch (e) {
-            showNotification('Невалидный JSON в поле данных', 'error');
+            alert('Невалидный JSON в поле данных');
             btn.innerHTML = originalText;
             btn.disabled = false;
             return;
         }
         
         // Отправляем запрос
-        const startTime = Date.now();
-        
         fetch('http://test-as1.ams-dev.ru/process', {
             method: 'POST',
             headers: {
@@ -280,29 +203,16 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify(jsonData)
         })
         .then(response => {
-            const duration = Date.now() - startTime;
-            const statusText = response.status === 200 ? 
-                `200 OK (${duration} ms)` : 
-                `${response.status} ${response.statusText} (${duration} ms)`;
-            
-            // Обновляем статус
-            const responseStatus = document.getElementById('processResponseStatus');
-            if (response.status === 200) {
-                responseStatus.className = 'response-status status-200';
-            } else if (response.status === 404) {
-                responseStatus.className = 'response-status status-404';
-            } else {
-                responseStatus.className = 'response-status status-other';
-            }
-            responseStatus.textContent = statusText;
-            
-            return response.json().then(data => ({data, status: response.status, duration}));
-        })
-        .then(result => {
             // Показываем ответ
             const responseContent = document.getElementById('processResponseContent');
-            responseContent.textContent = JSON.stringify(result.data, null, 2);
-            document.getElementById('processResponse').style.display = 'block';
+            response.text().then(text => {
+                try {
+                    responseContent.textContent = JSON.stringify(JSON.parse(text), null, 2);
+                } catch (e) {
+                    responseContent.textContent = text;
+                }
+                document.getElementById('processResponse').style.display = 'block';
+            });
             
             // Скрываем лоадер
             btn.innerHTML = originalText;
@@ -310,28 +220,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Обновляем логи
             setTimeout(loadLogs, 500);
-            setTimeout(loadMetrics, 1000);
-            
-            if (result.status === 200) {
-                showNotification(`Запрос успешно отправлен за ${result.duration} ms`, 'success');
-            } else {
-                showNotification(`Запрос обработан с кодом ${result.status}`, 'warning');
-            }
         })
         .catch(error => {
             // Скрываем лоадер
             btn.innerHTML = originalText;
             btn.disabled = false;
             
-            const responseStatus = document.getElementById('processResponseStatus');
-            responseStatus.className = 'response-status status-other';
-            responseStatus.textContent = `Ошибка: ${error.message}`;
-            
             const responseContent = document.getElementById('processResponseContent');
-            responseContent.textContent = 'Не удалось отправить запрос';
+            responseContent.textContent = 'Не удалось отправить запрос: ' + error.message;
             document.getElementById('processResponse').style.display = 'block';
-            
-            showNotification('Ошибка при отправке запроса: ' + error.message, 'error');
         });
     }
     
@@ -347,36 +244,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const method = document.getElementById('invalidMethod').value;
         
         // Отправляем запрос
-        const startTime = Date.now();
-        
         fetch(`http://test-as1.ams-dev.ru${path}`, {
             method: method
         })
         .then(response => {
-            const duration = Date.now() - startTime;
-            const statusText = `${response.status} ${response.statusText} (${duration} ms)`;
-            
-            // Обновляем статус
-            const responseStatus = document.getElementById('404ResponseStatus');
-            if (response.status === 404) {
-                responseStatus.className = 'response-status status-404';
-            } else {
-                responseStatus.className = 'response-status status-other';
-            }
-            responseStatus.textContent = statusText;
-            
-            return response.text().then(text => ({text, status: response.status, duration}));
-        })
-        .then(result => {
             // Показываем ответ
             const responseContent = document.getElementById('404ResponseContent');
-            try {
-                const json = JSON.parse(result.text);
-                responseContent.textContent = JSON.stringify(json, null, 2);
-            } catch (e) {
-                responseContent.textContent = result.text;
-            }
-            document.getElementById('404Response').style.display = 'block';
+            response.text().then(text => {
+                try {
+                    responseContent.textContent = JSON.stringify(JSON.parse(text), null, 2);
+                } catch (e) {
+                    responseContent.textContent = text;
+                }
+                document.getElementById('404Response').style.display = 'block';
+            });
             
             // Скрываем лоадер
             btn.innerHTML = originalText;
@@ -384,28 +265,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Обновляем логи
             setTimeout(loadLogs, 500);
-            setTimeout(loadMetrics, 1000);
-            
-            if (result.status === 404) {
-                showNotification(`Запрос успешно обработан за ${result.duration} ms (ожидаемый 404)`, 'success');
-            } else {
-                showNotification(`Запрос обработан с кодом ${result.status} (ожидался 404)`, 'warning');
-            }
         })
         .catch(error => {
             // Скрываем лоадер
             btn.innerHTML = originalText;
             btn.disabled = false;
             
-            const responseStatus = document.getElementById('404ResponseStatus');
-            responseStatus.className = 'response-status status-other';
-            responseStatus.textContent = `Ошибка: ${error.message}`;
-            
             const responseContent = document.getElementById('404ResponseContent');
-            responseContent.textContent = 'Не удалось отправить запрос';
+            responseContent.textContent = 'Не удалось отправить запрос: ' + error.message;
             document.getElementById('404Response').style.display = 'block';
-            
-            showNotification('Ошибка при отправке запроса: ' + error.message, 'error');
         });
     }
     
@@ -424,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             headers = JSON.parse(document.getElementById('customHeaders').value);
         } catch (e) {
-            showNotification('Невалидный JSON в заголовках', 'error');
+            alert('Невалидный JSON в заголовках');
             btn.innerHTML = originalText;
             btn.disabled = false;
             return;
@@ -435,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 body = JSON.parse(document.getElementById('customBody').value);
             } catch (e) {
-                showNotification('Невалидный JSON в теле запроса', 'error');
+                alert('Невалидный JSON в теле запроса');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 return;
@@ -443,40 +311,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Отправляем запрос
-        const startTime = Date.now();
-        
         fetch(url, {
             method: method,
             headers: headers,
             body: body ? JSON.stringify(body) : null
         })
         .then(response => {
-            const duration = Date.now() - startTime;
-            const statusText = `${response.status} ${response.statusText} (${duration} ms)`;
-            
-            // Обновляем статус
-            const responseStatus = document.getElementById('customResponseStatus');
-            if (response.status === 200) {
-                responseStatus.className = 'response-status status-200';
-            } else if (response.status === 404) {
-                responseStatus.className = 'response-status status-404';
-            } else {
-                responseStatus.className = 'response-status status-other';
-            }
-            responseStatus.textContent = statusText;
-            
-            return response.text().then(text => ({text, status: response.status, duration}));
-        })
-        .then(result => {
             // Показываем ответ
             const responseContent = document.getElementById('customResponseContent');
-            try {
-                const json = JSON.parse(result.text);
-                responseContent.textContent = JSON.stringify(json, null, 2);
-            } catch (e) {
-                responseContent.textContent = result.text;
-            }
-            document.getElementById('customResponse').style.display = 'block';
+            response.text().then(text => {
+                try {
+                    responseContent.textContent = JSON.stringify(JSON.parse(text), null, 2);
+                } catch (e) {
+                    responseContent.textContent = text;
+                }
+                document.getElementById('customResponse').style.display = 'block';
+            });
             
             // Скрываем лоадер
             btn.innerHTML = originalText;
@@ -484,24 +334,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Обновляем логи
             setTimeout(loadLogs, 500);
-            setTimeout(loadMetrics, 1000);
-            
-            showNotification(`Запрос обработан за ${result.duration} ms`, 'info');
         })
         .catch(error => {
             // Скрываем лоадер
             btn.innerHTML = originalText;
             btn.disabled = false;
             
-            const responseStatus = document.getElementById('customResponseStatus');
-            responseStatus.className = 'response-status status-other';
-            responseStatus.textContent = `Ошибка: ${error.message}`;
-            
             const responseContent = document.getElementById('customResponseContent');
-            responseContent.textContent = 'Не удалось отправить запрос';
+            responseContent.textContent = 'Не удалось отправить запрос: ' + error.message;
             document.getElementById('customResponse').style.display = 'block';
-            
-            showNotification('Ошибка при отправке запроса: ' + error.message, 'error');
         });
     }
     
@@ -563,13 +404,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             case 'large-payload':
                 activateTab('process');
-                // Создаем большой объект
-                const largeData = {
+                document.getElementById('processData').value = JSON.stringify({
                     test: "large_payload",
                     timestamp: new Date().toISOString(),
                     data: "A".repeat(1024 * 1024) // ~1MB
-                };
-                document.getElementById('processData').value = JSON.stringify(largeData, null, 2);
+                }, null, 2);
                 break;
                 
             case 'special-chars':
@@ -619,16 +458,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     sequence: 1
                 }, null, 2);
                 
-                showNotification('Запуск теста ограничения запросов (10 запросов)', 'info');
+                alert('Запуск теста ограничения запросов (10 запросов)');
                 
                 let count = 0;
                 const total = 10;
-                const startTime = Date.now();
                 
                 function sendNextRequest() {
                     if (count >= total) {
-                        const duration = Date.now() - startTime;
-                        showNotification(`Тест ограничения запросов завершен. ${total} запросов за ${duration}ms`, 'success');
+                        alert(`Тест ограничения запросов завершен. ${total} запросов отправлено.`);
                         loadLogs();
                         return;
                     }
@@ -647,10 +484,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Начинаем с первого запроса
                 setTimeout(sendNextRequest, 100);
-                return; // Не продолжаем выполнение, так как запросы отправляются асинхронно
+                return;
         }
-        
-        showNotification(`Тест-кейс "${testCase}" загружен. Нажмите "Отправить", чтобы выполнить запрос.`, 'info');
     }
     
     function activateTab(tabName) {
@@ -844,29 +679,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('invalidMethod').value = method;
         }
         
-        showNotification('Изменения применены к консоли запросов', 'info');
+        alert('Изменения применены к консоли запросов');
     }
     
-    function showLogDetails(timestamp) {
-        // В реальной реализации здесь мог бы быть запрос к API для получения деталей конкретного лога
-        const logEntry = document.querySelector(`.log-entry[data-timestamp="${timestamp}"]`);
-        const method = logEntry.querySelector('.log-method').textContent;
-        const path = logEntry.querySelector('.log-path').textContent;
-        const status = logEntry.querySelector('.log-status').textContent;
-        const timestampText = logEntry.querySelector('.log-timestamp').textContent;
-        
-        showNotification(`Детали запроса: ${method} ${path} (${status}) в ${timestampText}`, 'info');
-    }
-    
-    function showNotification(message, type) {
-        const notification = document.getElementById('notification');
-        const notificationMessage = document.getElementById('notification-message');
-        
-        notificationMessage.textContent = message;
-        notification.className = 'notification ' + type + ' show';
-        
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 5000);
-    }
+    // Инициализация приложения
+    initTabs();
+    setupEventListeners();
+    checkApiStatus();
+    loadLogs();
 });
