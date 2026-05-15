@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функции инициализации
     function initTabs() {
         // Табы тест-кейсов
-        document.querySelectorAll('.tab-navigation:first-of-type .tab').forEach(tab => {
+        document.querySelectorAll('.tab-navigation .tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 // Скрываем все содержимое
                 document.querySelectorAll('.test-cases .tab-content').forEach(content => {
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 // Убираем активный класс со всех табов
-                document.querySelectorAll('.tab-navigation:first-of-type .tab').forEach(t => {
+                document.querySelectorAll('.tab-navigation .tab').forEach(t => {
                     t.classList.remove('active');
                 });
                 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Табы консоли запросов
-        document.querySelectorAll('.tab-navigation:last-of-type .tab').forEach(tab => {
+        document.querySelectorAll('.tab-navigation .tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 // Скрываем все содержимое
                 document.querySelectorAll('.main-content .tab-content').forEach(content => {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 // Убираем активный класс со всех табов
-                document.querySelectorAll('.tab-navigation:last-of-type .tab').forEach(t => {
+                document.querySelectorAll('.tab-navigation .tab').forEach(t => {
                     t.classList.remove('active');
                 });
                 
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Обработчик выбора вкладки тест-кейсов
-        document.querySelectorAll('.tab-navigation:first-of-type .tab').forEach(tab => {
+        document.querySelectorAll('.tab-navigation .tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 const tabName = this.getAttribute('data-tab');
                 
@@ -655,12 +655,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function activateTab(tabName) {
         // Деактивируем все табы консоли запросов
-        document.querySelectorAll('.tab-navigation:last-of-type .tab').forEach(t => {
+        document.querySelectorAll('.tab-navigation .tab').forEach(t => {
             t.classList.remove('active');
         });
         
         // Активируем нужный таб
-        document.querySelector(`.tab-navigation:last-of-type .tab[data-tab="${tabName}"]`).classList.add('active');
+        document.querySelector(`.tab-navigation .tab[data-tab="${tabName}"]`).classList.add('active');
         
         // Скрываем все содержимое
         document.querySelectorAll('.main-content .tab-content').forEach(content => {
