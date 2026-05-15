@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function sendCurrentRequest() {
         // Определяем активную вкладку
-        const activeTab = document.querySelector('.tab-navigation:last-of-type .tab.active');
+        const activeTab = document.querySelector('.tab-navigation .tab.active');
         const tabName = activeTab.getAttribute('data-tab');
         
         switch(tabName) {
