@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./api
+    networks:
+      - app-network
+    volumes:
+      - api-data:/data
+
+  php:
+    build: ./php
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - app-network
+    depends_on:
+      - api
+      - php
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  api-data:
