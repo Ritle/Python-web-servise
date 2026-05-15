@@ -3,472 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Tester - Улучшенный интерфейс</title>
-    <style>
-        :root {
-            --primary: #3498db;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
-            --gray: #95a5a6;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f7fa;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-        }
-        
-        h1 {
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            color: var(--gray);
-            font-size: 1.1em;
-        }
-        
-        .api-status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        
-        .status-ok {
-            background-color: rgba(46, 204, 113, 0.1);
-            color: var(--success);
-        }
-        
-        .status-error {
-            background-color: rgba(231, 76, 60, 0.1);
-            color: var(--danger);
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-        
-        @media (max-width: 900px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 25px;
-            margin-bottom: 25px;
-            transition: transform 0.2s;
-        }
-        
-        .card:hover {
-            transform: translateY(-3px);
-        }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .card-title {
-            font-size: 1.4em;
-            color: var(--dark);
-        }
-        
-        .endpoint-badge {
-            background: var(--light);
-            padding: 3px 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            transition: border-color 0.2s;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .json-preview {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 0.95em;
-            overflow-x: auto;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        
-        .btn:hover {
-            background: #2980b9;
-        }
-        
-        .btn-success {
-            background: var(--success);
-        }
-        
-        .btn-success:hover {
-            background: #27ae60;
-        }
-        
-        .btn-danger {
-            background: var(--danger);
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-        
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-        
-        .response-section {
-            margin-top: 20px;
-        }
-        
-        .response-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .response-status {
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        
-        .status-200 {
-            background: rgba(46, 204, 113, 0.1);
-            color: var(--success);
-        }
-        
-        .status-404 {
-            background: rgba(243, 156, 18, 0.1);
-            color: var(--warning);
-        }
-        
-        .status-other {
-            background: rgba(231, 76, 60, 0.1);
-            color: var(--danger);
-        }
-        
-        .log-entry {
-            padding: 15px;
-            border-left: 4px solid var(--primary);
-            margin-bottom: 15px;
-            background: #f8f9fa;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .log-method {
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-        
-        .method-GET {
-            background: rgba(46, 204, 113, 0.2);
-            color: var(--success);
-        }
-        
-        .method-POST {
-            background: rgba(52, 152, 219, 0.2);
-            color: var(--primary);
-        }
-        
-        .log-timestamp {
-            color: var(--gray);
-            font-size: 0.9em;
-        }
-        
-        .log-path {
-            font-family: monospace;
-            color: var(--dark);
-            margin-bottom: 5px;
-        }
-        
-        .log-status {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner {
-            border: 3px solid rgba(52, 152, 219, 0.2);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .test-cases {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .test-case {
-            background: var(--light);
-            padding: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .test-case:hover {
-            background: #d6dbdf;
-            transform: translateY(-2px);
-        }
-        
-        .test-case h4 {
-            margin-bottom: 8px;
-            color: var(--dark);
-        }
-        
-        .test-case p {
-            color: var(--gray);
-            font-size: 0.9em;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: var(--gray);
-            font-size: 0.9em;
-            padding: 20px;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 5px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateX(150%);
-            transition: transform 0.3s ease;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            background: var(--success);
-        }
-        
-        .notification.error {
-            background: var(--danger);
-        }
-    </style>
+    <title>API Tester Pro - Расширенное тестирование</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>API Tester <span class="api-status status-ok">API доступен</span></h1>
-            <p class="subtitle">Интерфейс для тестирования сервиса на <strong>test-as1.ams-dev.ru</strong></p>
+            <h1>
+                <i class="fas fa-microchip"></i> API Tester Pro
+                <span class="api-status status-ok">API доступен</span>
+            </h1>
+            <p class="subtitle">
+                <span>Интерфейс для комплексного тестирования сервиса на <strong>test-as1.ams-dev.ru</strong></span>
+                <span class="endpoint-tag">POST /process</span>
+                <span class="endpoint-tag">GET /logs</span>
+            </p>
         </header>
         
         <div class="grid">
-            <div class="left-column">
+            <div class="test-cases-sidebar">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">Тестирование /process</h2>
-                        <span class="endpoint-badge">POST /process</span>
+                        <h2 class="card-title">
+                            <span class="card-icon"><i class="fas fa-list"></i></span>
+                            Готовые тест-кейсы
+                        </h2>
+                        <span class="badge">12 сценариев</span>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="testData">Тестовые данные (JSON)</label>
-                        <textarea id="testData" placeholder='{"key": "value"}'>{"test": "data"}</textarea>
-                    </div>
-                    
-                    <button id="sendProcessBtn" class="btn btn-success btn-block">
-                        <span class="btn-text">Отправить запрос</span>
-                        <span class="spinner" style="display: none;"></span>
-                    </button>
-                    
-                    <div class="response-section" id="processResponse" style="display: none;">
-                        <div class="response-header">
-                            <h3>Ответ</h3>
-                            <span class="response-status status-200" id="processResponseStatus">200 OK</span>
-                        </div>
-                        <div class="json-preview" id="processResponseContent"></div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Тестирование 404</h2>
-                        <span class="endpoint-badge">Любой метод /invalid</span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="invalidEndpoint">Путь для тестирования</label>
-                        <input type="text" id="invalidEndpoint" value="/invalid-path" placeholder="Введите путь">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="httpMethod">HTTP метод</label>
-                        <select id="httpMethod">
-                            <option value="GET">GET</option>
-                            <option value="POST">POST</option>
-                            <option value="PUT">PUT</option>
-                            <option value="DELETE">DELETE</option>
-                        </select>
-                    </div>
-                    
-                    <button id="send404Btn" class="btn btn-danger btn-block">
-                        <span class="btn-text">Отправить запрос</span>
-                        <span class="spinner" style="display: none;"></span>
-                    </button>
-                    
-                    <div class="response-section" id="404Response" style="display: none;">
-                        <div class="response-header">
-                            <h3>Ответ</h3>
-                            <span class="response-status status-404" id="404ResponseStatus">404 Not Found</span>
-                        </div>
-                        <div class="json-preview" id="404ResponseContent"></div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Готовые тест-кейсы</h2>
+                    <div class="tab-navigation">
+                        <div class="tab active" data-tab="core">Основные</div>
+                        <div class="tab" data-tab="edge">Пограничные</div>
+                        <div class="tab" data-tab="security">Безопасность</div>
                     </div>
                     
                     <div class="test-cases">
-                        <div class="test-case" data-case="valid-json">
-                            <h4>Валидный JSON</h4>
-                            <p>Тест с корректными данными</p>
+                        <!-- Основные тест-кейсы -->
+                        <div class="tab-content active" id="tab-core">
+                            <div class="test-case valid" data-case="valid-basic" data-tab="core">
+                                <h4><i class="fas fa-check-circle"></i> Базовый валидный запрос</h4>
+                                <p>Тест с минимальным набором корректных данных</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-core">Основной</span>
+                            </div>
+                            
+                            <div class="test-case valid" data-case="valid-full" data-tab="core">
+                                <h4><i class="fas fa-check-circle"></i> Полный валидный запрос</h4>
+                                <p>Тест с расширенным набором данных и метаданными</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-core">Основной</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="404-get" data-tab="core">
+                                <h4><i class="fas fa-exclamation-triangle"></i> GET к /process</h4>
+                                <p>Проверка ограничения методов для /process</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-404">404 Not Found</span>
+                                </div>
+                                <span class="case-category category-core">Основной</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="404-post-logs" data-tab="core">
+                                <h4><i class="fas fa-exclamation-triangle"></i> POST к /logs</h4>
+                                <p>Проверка ограничения методов для /logs</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-404">404 Not Found</span>
+                                </div>
+                                <span class="case-category category-core">Основной</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="404-invalid" data-tab="core">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Запрос к несуществующему пути</h4>
+                                <p>Проверка обработки произвольных путей</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-404">404 Not Found</span>
+                                </div>
+                                <span class="case-category category-core">Основной</span>
+                            </div>
                         </div>
-                        <div class="test-case" data-case="empty-json">
-                            <h4>Пустой JSON</h4>
-                            <p>Тест с пустым объектом</p>
+                        
+                        <!-- Пограничные тест-кейсы -->
+                        <div class="tab-content" id="tab-edge">
+                            <div class="test-case valid" data-case="empty-json" data-tab="edge">
+                                <h4><i class="fas fa-check-circle"></i> Пустой JSON объект</h4>
+                                <p>Тест с пустым JSON телом {}</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-edge">Пограничный</span>
+                            </div>
+                            
+                            <div class="test-case danger" data-case="invalid-json" data-tab="edge">
+                                <h4><i class="fas fa-times-circle"></i> Невалидный JSON</h4>
+                                <p>Тест с синтаксически некорректным JSON</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-422">422 Unprocessable Entity</span>
+                                </div>
+                                <span class="case-category category-edge">Пограничный</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="large-payload" data-tab="edge">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Большой объем данных</h4>
+                                <p>Тест с большими данными (1MB+)</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-edge">Пограничный</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="special-chars" data-tab="edge">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Специальные символы</h4>
+                                <p>Тест с Unicode и специальными символами</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-edge">Пограничный</span>
+                            </div>
                         </div>
-                        <div class="test-case" data-case="invalid-json">
-                            <h4>Невалидный JSON</h4>
-                            <p>Тест с некорректным JSON</p>
+                        
+                        <!-- Тест-кейсы безопасности -->
+                        <div class="tab-content" id="tab-security">
+                            <div class="test-case warning" data-case="xss-attempt" data-tab="security">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Попытка XSS</h4>
+                                <p>Тест на уязвимость к XSS атакам</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-security">Безопасность</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="sql-injection" data-tab="security">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Попытка SQL-инъекции</h4>
+                                <p>Тест на уязвимость к SQL-инъекциям</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-security">Безопасность</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="headers-test" data-tab="security">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Проверка заголовков</h4>
+                                <p>Тест обработки дополнительных заголовков</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-security">Безопасность</span>
+                            </div>
+                            
+                            <div class="test-case warning" data-case="rate-limit" data-tab="security">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Проверка ограничения запросов</h4>
+                                <p>Тест на защиту от DDoS (10 запросов подряд)</p>
+                                <div class="expected">
+                                    <i class="fas fa-arrow-right"></i> 
+                                    <span class="expected-status status-200">200 OK</span>
+                                </div>
+                                <span class="case-category category-security">Безопасность</span>
+                            </div>
                         </div>
-                        <div class="test-case" data-case="404-get">
-                            <h4>GET /invalid</h4>
-                            <p>Тест 404 для GET запроса</p>
+                    </div>
+                    
+                    <div class="test-case-details hidden" id="case-details">
+                        <h5><i class="fas fa-info-circle"></i> Детали тест-кейса</h5>
+                        <div id="case-description">Выберите тест-кейс для просмотра деталей</div>
+                        
+                        <h5 style="margin-top: 15px;"><i class="fas fa-cogs"></i> Параметры запроса</h5>
+                        <div id="case-request">
+                            <p>Метод: <span id="case-method">POST</span></p>
+                            <p>Путь: <span id="case-path">/process</span></p>
+                            <p>Тело запроса:</p>
+                            <pre id="case-body">{"key": "value"}</pre>
+                        </div>
+                        
+                        <div class="request-builder">
+                            <h4><i class="fas fa-sliders-h"></i> Настройка запроса</h4>
+                            <div class="builder-row">
+                                <div>
+                                    <label>HTTP Метод</label>
+                                    <select id="builder-method">
+                                        <option value="POST">POST</option>
+                                        <option value="GET">GET</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="DELETE">DELETE</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Путь</label>
+                                    <input type="text" id="builder-path" value="/process">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Тело запроса</label>
+                                <textarea id="builder-body">{"test": "data"}</textarea>
+                            </div>
+                            <button id="apply-builder" class="btn btn-info btn-block">
+                                <i class="fas fa-check"></i> Применить изменения
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-panel">
+                        <div class="metric-card">
+                            <div><i class="fas fa-microchip"></i></div>
+                            <div class="metric-value" id="total-requests">0</div>
+                            <div class="metric-label">Всего запросов</div>
+                        </div>
+                        <div class="metric-card">
+                            <div><i class="fas fa-check"></i></div>
+                            <div class="metric-value" id="success-rate">100%</div>
+                            <div class="metric-label">Успешных</div>
+                        </div>
+                        <div class="metric-card">
+                            <div><i class="fas fa-bug"></i></div>
+                            <div class="metric-value" id="error-rate">0%</div>
+                            <div class="metric-label">Ошибок</div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="right-column">
+            <div class="main-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">Последние запросы</h2>
-                        <button id="refreshLogsBtn" class="btn">Обновить</button>
+                        <h2 class="card-title">
+                            <span class="card-icon"><i class="fas fa-bolt"></i></span>
+                            Консоль запросов
+                        </h2>
+                        <button id="sendRequestBtn" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Отправить
+                        </button>
+                    </div>
+                    
+                    <div class="tab-navigation">
+                        <div class="tab active" data-tab="process">/process</div>
+                        <div class="tab" data-tab="404">404 Тестирование</div>
+                        <div class="tab" data-tab="custom">Произвольный запрос</div>
+                    </div>
+                    
+                    <!-- Вкладка /process -->
+                    <div class="tab-content active" id="tab-process">
+                        <div class="form-group">
+                            <label>
+                                Тело запроса (JSON)
+                                <span class="label-help" title="Введите данные в формате JSON"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <textarea id="processData" placeholder='{"key": "value"}'>{"test": "data", "timestamp": "2026-05-15T14:30:00"}</textarea>
+                        </div>
+                        
+                        <div class="response-section" id="processResponse" style="display: none;">
+                            <div class="response-header">
+                                <h3><i class="fas fa-server"></i> Ответ сервера</h3>
+                                <span class="response-status status-200" id="processResponseStatus">200 OK</span>
+                            </div>
+                            <div class="json-preview" id="processResponseContent"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладка 404 Тестирование -->
+                    <div class="tab-content" id="tab-404">
+                        <div class="form-group">
+                            <label>
+                                Путь для тестирования
+                                <span class="label-help" title="Введите путь, который не существует в API"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <input type="text" id="invalidPath" value="/invalid-path" placeholder="Введите путь">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                HTTP метод
+                                <span class="label-help" title="Выберите метод, который не поддерживается для этого пути"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <select id="invalidMethod">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                                <option value="OPTIONS">OPTIONS</option>
+                            </select>
+                        </div>
+                        
+                        <div class="response-section" id="404Response" style="display: none;">
+                            <div class="response-header">
+                                <h3><i class="fas fa-server"></i> Ответ сервера</h3>
+                                <span class="response-status status-404" id="404ResponseStatus">404 Not Found</span>
+                            </div>
+                            <div class="json-preview" id="404ResponseContent"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладка Произвольный запрос -->
+                    <div class="tab-content" id="tab-custom">
+                        <div class="form-group">
+                            <label>
+                                URL
+                                <span class="label-help" title="Полный URL, включая домен"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <input type="text" id="customUrl" value="http://test-as1.ams-dev.ru/process" placeholder="Введите полный URL">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                HTTP метод
+                                <span class="label-help" title="Выберите HTTP метод"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <select id="customMethod">
+                                <option value="GET">GET</option>
+                                <option value="POST" selected>POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                                <option value="OPTIONS">OPTIONS</option>
+                                <option value="HEAD">HEAD</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Заголовки
+                                <span class="label-help" title="Дополнительные заголовки в формате JSON"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <textarea id="customHeaders" placeholder='{
+    "Content-Type": "application/json"
+}'>{
+    "Content-Type": "application/json"
+}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Тело запроса
+                                <span class="label-help" title="Тело запроса в формате JSON"><i class="fas fa-question-circle"></i></span>
+                            </label>
+                            <textarea id="customBody" placeholder='{"key": "value"}'></textarea>
+                        </div>
+                        
+                        <div class="response-section" id="customResponse" style="display: none;">
+                            <div class="response-header">
+                                <h3><i class="fas fa-server"></i> Ответ сервера</h3>
+                                <span class="response-status status-200" id="customResponseStatus">200 OK</span>
+                            </div>
+                            <div class="json-preview" id="customResponseContent"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span class="card-icon"><i class="fas fa-history"></i></span>
+                            Последние запросы
+                        </h2>
+                        <div>
+                            <button id="refreshLogsBtn" class="btn" style="margin-right: 10px;">
+                                <i class="fas fa-sync-alt"></i> Обновить
+                            </button>
+                            <button id="clearLogsBtn" class="btn btn-danger">
+                                <i class="fas fa-trash-alt"></i> Очистить
+                            </button>
+                        </div>
                     </div>
                     
                     <div id="logsLoading" class="loading">
@@ -481,13 +391,17 @@
                     </div>
                     
                     <div id="noLogs" class="hidden" style="text-align: center; padding: 20px; color: var(--gray);">
+                        <i class="fas fa-inbox" style="font-size: 2em; margin-bottom: 15px; opacity: 0.5;"></i>
                         <p>Нет записей в логах. Отправьте первый запрос!</p>
                     </div>
                 </div>
                 
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title">Информация о сервисе</h2>
+                        <h2 class="card-title">
+                            <span class="card-icon"><i class="fas fa-shield-alt"></i></span>
+                            Информация о сервисе
+                        </h2>
                     </div>
                     
                     <div class="form-group">
@@ -498,325 +412,60 @@
                     <div class="form-group">
                         <label>Доступные эндпоинты</label>
                         <div>
-                            <div style="display: flex; margin-bottom: 8px;">
-                                <span style="width: 60px; background: rgba(46, 204, 113, 0.1); color: var(--success); border-radius: 3px; padding: 3px 5px; margin-right: 10px;">GET</span>
-                                <span>/logs</span>
+                            <div style="display: flex; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #eee;">
+                                <span style="width: 70px; background: rgba(46, 204, 113, 0.1); color: var(--success); border-radius: 3px; padding: 4px 8px; margin-right: 12px; text-align: center;">GET</span>
+                                <span style="flex: 1;">/logs</span>
+                                <span style="background: rgba(46, 204, 113, 0.1); color: var(--success); border-radius: 3px; padding: 3px 10px; font-size: 0.9em;">Возвращает последние 5 запросов</span>
                             </div>
-                            <div style="display: flex;">
-                                <span style="width: 60px; background: rgba(52, 152, 219, 0.1); color: var(--primary); border-radius: 3px; padding: 3px 5px; margin-right: 10px;">POST</span>
-                                <span>/process</span>
+                            <div style="display: flex; align-items: center;">
+                                <span style="width: 70px; background: rgba(52, 152, 219, 0.1); color: var(--primary); border-radius: 3px; padding: 4px 8px; margin-right: 12px; text-align: center;">POST</span>
+                                <span style="flex: 1;">/process</span>
+                                <span style="background: rgba(52, 152, 219, 0.1); color: var(--primary); border-radius: 3px; padding: 3px 10px; font-size: 0.9em;">Обрабатывает входящие данные</span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label>Статус сервиса</label>
-                        <div id="serviceStatus" style="display: flex; align-items: center;">
+                        <div id="serviceStatus" style="display: flex; align-items: center; padding: 10px 0;">
                             <div class="spinner" style="margin-right: 10px;"></div>
                             <span>Проверка статуса...</span>
                         </div>
                     </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Инструкция</h2>
+                    
+                    <div class="form-group">
+                        <label>Статистика</label>
+                        <div class="metrics-panel">
+                            <div class="metric-card">
+                                <div><i class="fas fa-clock"></i></div>
+                                <div class="metric-value" id="avg-response">0 ms</div>
+                                <div class="metric-label">Среднее время ответа</div>
+                            </div>
+                            <div class="metric-card">
+                                <div><i class="fas fa-database"></i></div>
+                                <div class="metric-value" id="log-count">0</div>
+                                <div class="metric-label">Записей в логах</div>
+                            </div>
+                            <div class="metric-card">
+                                <div><i class="fas fa-history"></i></div>
+                                <div class="metric-value" id="last-request">-</div>
+                                <div class="metric-label">Последний запрос</div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <ul style="padding-left: 20px; margin-bottom: 15px;">
-                        <li style="margin-bottom: 10px;">Используйте форму для отправки тестовых данных на <code>/process</code></li>
-                        <li style="margin-bottom: 10px;">Проверьте обработку 404 через форму "Тестирование 404"</li>
-                        <li style="margin-bottom: 10px;">Последние запросы автоматически отображаются справа</li>
-                        <li>Готовые тест-кейсы упрощают проверку основных сценариев</li>
-                    </ul>
-                    
-                    <h4 style="margin: 15px 0 10px;">Ожидаемое поведение:</h4>
-                    <ul style="padding-left: 20px;">
-                        <li style="margin-bottom: 8px; color: var(--success);">✓ POST /process → 200 OK</li>
-                        <li style="margin-bottom: 8px; color: var(--success);">✓ GET /logs → 200 OK с логами</li>
-                        <li style="color: var(--warning);">⚠ Все остальные запросы → 404 Not Found</li>
-                    </ul>
                 </div>
             </div>
         </div>
         
         <footer>
-            <p>API Tester &copy; 2026 | Тестирование сервиса на test-as1.ams-dev.ru</p>
+            <p>API Tester Pro &copy; 2026 | Тестирование сервиса на test-as1.ams-dev.ru | Версия 2.1</p>
         </footer>
     </div>
     
-    <div class="notification" id="notification"></div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Проверка статуса API
-            checkApiStatus();
-            
-            // Загрузка логов
-            loadLogs();
-            
-            // Обработчики кнопок
-            document.getElementById('sendProcessBtn').addEventListener('click', sendProcessRequest);
-            document.getElementById('send404Btn').addEventListener('click', send404Request);
-            document.getElementById('refreshLogsBtn').addEventListener('click', loadLogs);
-            
-            // Готовые тест-кейсы
-            document.querySelectorAll('.test-case').forEach(item => {
-                item.addEventListener('click', function() {
-                    const testCase = this.getAttribute('data-case');
-                    applyTestCase(testCase);
-                });
-            });
-            
-            // Функции
-            function checkApiStatus() {
-                const statusElement = document.getElementById('serviceStatus');
-                statusElement.innerHTML = '<div class="spinner" style="margin-right: 10px;"></div><span>Проверка статуса...</span>';
-                
-                fetch('http://test-as1.ams-dev.ru/logs')
-                    .then(response => {
-                        const apiStatus = document.querySelector('.api-status');
-                        if (response.ok) {
-                            statusElement.innerHTML = '<span style="color: var(--success);">✓ API работает нормально</span>';
-                            apiStatus.className = 'api-status status-ok';
-                            apiStatus.textContent = 'API доступен';
-                        } else {
-                            statusElement.innerHTML = '<span style="color: var(--warning);">⚠ API отвечает, но с ошибкой</span>';
-                            apiStatus.className = 'api-status status-warning';
-                            apiStatus.textContent = 'API с проблемами';
-                        }
-                    })
-                    .catch(error => {
-                        const apiStatus = document.querySelector('.api-status');
-                        statusElement.innerHTML = '<span style="color: var(--danger);">✗ API недоступен</span>';
-                        apiStatus.className = 'api-status status-error';
-                        apiStatus.textContent = 'API недоступен';
-                        showNotification('Ошибка подключения к API. Проверьте настройки сервера.', 'error');
-                    });
-            }
-            
-            function loadLogs() {
-                const logsContainer = document.getElementById('logsContainer');
-                const logsLoading = document.getElementById('logsLoading');
-                const noLogs = document.getElementById('noLogs');
-                
-                logsContainer.style.display = 'none';
-                logsLoading.style.display = 'block';
-                noLogs.style.display = 'none';
-                
-                fetch('http://test-as1.ams-dev.ru/logs')
-                    .then(response => response.json())
-                    .then(data => {
-                        logsLoading.style.display = 'none';
-                        
-                        if (!data.logs || data.logs.length === 0) {
-                            noLogs.style.display = 'block';
-                            return;
-                        }
-                        
-                        let logsHTML = '';
-                        data.logs.forEach(log => {
-                            const date = new Date(log.timestamp);
-                            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                            
-                            logsHTML += `
-                                <div class="log-entry">
-                                    <div class="log-header">
-                                        <span class="log-method method-${log.method}">${log.method}</span>
-                                        <span class="log-timestamp">${formattedDate}</span>
-                                    </div>
-                                    <div class="log-path">${log.path}</div>
-                                    <span class="log-status status-${log.status_code}">${log.status_code}</span>
-                                </div>
-                            `;
-                        });
-                        
-                        logsContainer.innerHTML = logsHTML;
-                        logsContainer.style.display = 'block';
-                    })
-                    .catch(error => {
-                        logsLoading.style.display = 'none';
-                        noLogs.style.display = 'block';
-                        noLogs.innerHTML = '<p>Ошибка загрузки логов. Проверьте подключение к API.</p>';
-                        showNotification('Не удалось загрузить логи: ' + error.message, 'error');
-                    });
-            }
-            
-            function sendProcessRequest() {
-                const btn = document.getElementById('sendProcessBtn');
-                const btnText = btn.querySelector('.btn-text');
-                const spinner = btn.querySelector('.spinner');
-                const responseSection = document.getElementById('processResponse');
-                const responseStatus = document.getElementById('processResponseStatus');
-                const responseContent = document.getElementById('processResponseContent');
-                
-                // Показываем лоадер
-                btnText.style.display = 'none';
-                spinner.style.display = 'inline-block';
-                
-                // Получаем данные
-                let jsonData;
-                try {
-                    jsonData = JSON.parse(document.getElementById('testData').value);
-                } catch (e) {
-                    showNotification('Невалидный JSON в поле данных', 'error');
-                    // Скрываем лоадер
-                    btnText.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    return;
-                }
-                
-                // Отправляем запрос
-                fetch('http://test-as1.ams-dev.ru/process', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(jsonData)
-                })
-                .then(response => {
-                    // Обновляем статус
-                    if (response.status === 200) {
-                        responseStatus.className = 'response-status status-200';
-                        responseStatus.textContent = `200 OK`;
-                    } else {
-                        responseStatus.className = 'response-status status-other';
-                        responseStatus.textContent = `${response.status} ${response.statusText}`;
-                    }
-                    
-                    return response.json().then(data => ({data, status: response.status}));
-                })
-                .then(result => {
-                    // Показываем ответ
-                    responseContent.textContent = JSON.stringify(result.data, null, 2);
-                    responseSection.style.display = 'block';
-                    
-                    // Скрываем лоадер
-                    btnText.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    
-                    // Обновляем логи
-                    setTimeout(loadLogs, 1000);
-                    
-                    showNotification('Запрос успешно отправлен', 'success');
-                })
-                .catch(error => {
-                    // Скрываем лоадер
-                    btnText.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    
-                    responseStatus.className = 'response-status status-other';
-                    responseStatus.textContent = `Ошибка: ${error.message}`;
-                    responseContent.textContent = 'Не удалось отправить запрос';
-                    responseSection.style.display = 'block';
-                    
-                    showNotification('Ошибка при отправке запроса: ' + error.message, 'error');
-                });
-            }
-            
-            function send404Request() {
-                const btn = document.getElementById('send404Btn');
-                const btnText = btn.querySelector('.btn-text');
-                const spinner = btn.querySelector('.spinner');
-                const responseSection = document.getElementById('404Response');
-                const responseStatus = document.getElementById('404ResponseStatus');
-                const responseContent = document.getElementById('404ResponseContent');
-                
-                // Показываем лоадер
-                btnText.style.display = 'none';
-                spinner.style.display = 'inline-block';
-                
-                // Получаем данные
-                const path = document.getElementById('invalidEndpoint').value;
-                const method = document.getElementById('httpMethod').value;
-                
-                // Отправляем запрос
-                fetch(`http://test-as1.ams-dev.ru${path}`, {
-                    method: method
-                })
-                .then(response => {
-                    // Обновляем статус
-                    responseStatus.className = 'response-status status-' + response.status;
-                    responseStatus.textContent = `${response.status} ${response.statusText}`;
-                    
-                    return response.text().then(text => ({text, status: response.status}));
-                })
-                .then(result => {
-                    // Показываем ответ
-                    try {
-                        const json = JSON.parse(result.text);
-                        responseContent.textContent = JSON.stringify(json, null, 2);
-                    } catch (e) {
-                        responseContent.textContent = result.text;
-                    }
-                    responseSection.style.display = 'block';
-                    
-                    // Скрываем лоадер
-                    btnText.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    
-                    // Обновляем логи
-                    setTimeout(loadLogs, 1000);
-                    
-                    if (result.status === 404) {
-                        showNotification('Запрос успешно обработан (ожидаемый 404)', 'success');
-                    } else {
-                        showNotification(`Запрос обработан с кодом ${result.status} (ожидался 404)`, 'warning');
-                    }
-                })
-                .catch(error => {
-                    // Скрываем лоадер
-                    btnText.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    
-                    responseStatus.className = 'response-status status-other';
-                    responseStatus.textContent = `Ошибка: ${error.message}`;
-                    responseContent.textContent = 'Не удалось отправить запрос';
-                    responseSection.style.display = 'block';
-                    
-                    showNotification('Ошибка при отправке запроса: ' + error.message, 'error');
-                });
-            }
-            
-            function applyTestCase(testCase) {
-                switch(testCase) {
-                    case 'valid-json':
-                        document.getElementById('testData').value = JSON.stringify({
-                            test: "data",
-                            timestamp: new Date().toISOString()
-                        }, null, 2);
-                        document.getElementById('sendProcessBtn').click();
-                        break;
-                        
-                    case 'empty-json':
-                        document.getElementById('testData').value = '{}';
-                        document.getElementById('sendProcessBtn').click();
-                        break;
-                        
-                    case 'invalid-json':
-                        document.getElementById('testData').value = '{ "invalid": json }';
-                        document.getElementById('sendProcessBtn').click();
-                        break;
-                        
-                    case '404-get':
-                        document.getElementById('invalidEndpoint').value = '/not-found';
-                        document.getElementById('httpMethod').value = 'GET';
-                        document.getElementById('send404Btn').click();
-                        break;
-                }
-            }
-            
-            function showNotification(message, type) {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.className = 'notification ' + type;
-                notification.classList.add('show');
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
-            }
-        });
-    </script>
+    <div class="notification" id="notification">
+        <i class="fas fa-bell"></i> <span id="notification-message">Уведомление</span>
+    </div>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
