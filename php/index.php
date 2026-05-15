@@ -179,7 +179,7 @@
                         </div>
                     </div>
                     
-                    <div class="test-case-details hidden" id="case-details">
+                    <div class="test-case-details" id="case-details">
                         <h5><i class="fas fa-info-circle"></i> Детали тест-кейса</h5>
                         <div id="case-description">Выберите тест-кейс для просмотра деталей</div>
                         
