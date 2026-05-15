@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const statusElement = document.getElementById('serviceStatus');
         statusElement.innerHTML = '<div class="spinner" style="margin-right: 10px;"></div><span>Проверка статуса...</span>';
         
-        fetch('http://test-as1.ams-dev.ru/logs')
+        fetch('https://test-as1.ams-dev.ru/logs')
             .then(response => {
                 const apiStatus = document.querySelector('.api-status');
                 if (response.ok) {
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         logsLoading.style.display = 'block';
         noLogs.style.display = 'none';
         
-        fetch('http://test-as1.ams-dev.ru/logs')
+        fetch('https://test-as1.ams-dev.ru/logs')
             .then(response => response.json())
             .then(data => {
                 logsLoading.style.display = 'none';
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Отправляем запрос
-        fetch('http://test-as1.ams-dev.ru/process', {
+        fetch('https://test-as1.ams-dev.ru/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const method = document.getElementById('invalidMethod').value;
         
         // Отправляем запрос
-        fetch(`http://test-as1.ams-dev.ru${path}`, {
+        fetch(`https://test-as1.ams-dev.ru${path}`, {
             method: method
         })
         .then(response => {
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             case 'headers-test':
                 activateTab('custom');
-                document.getElementById('customUrl').value = 'http://test-as1.ams-dev.ru/process';
+                document.getElementById('customUrl').value = 'https://test-as1.ams-dev.ru/process';
                 document.getElementById('customMethod').value = 'POST';
                 document.getElementById('customHeaders').value = JSON.stringify({
                     "Content-Type": "application/json",
@@ -546,14 +546,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
                 
             case '404-get':
-                description.textContent = 'Попытка выполнить GET запрос к эндпоинту, который поддерживает только POST. Проверяет ограничение HTTP методов.';
+                description.textContent = 'Попытка выполнить GET запрос к эндпоинту, который поддерживает только POST. Проверяет ограничение https методов.';
                 method.textContent = 'GET';
                 path.textContent = '/process';
                 body.textContent = '// Тело не требуется для GET запроса';
                 break;
                 
             case '404-post-logs':
-                description.textContent = 'Попытка выполнить POST запрос к эндпоинту, который поддерживает только GET. Проверяет ограничение HTTP методов.';
+                description.textContent = 'Попытка выполнить POST запрос к эндпоинту, который поддерживает только GET. Проверяет ограничение https методов.';
                 method.textContent = 'POST';
                 path.textContent = '/logs';
                 body.textContent = `{
@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('processData').value = body;
         } else if (path === '/logs' && method === 'GET') {
             activateTab('custom');
-            document.getElementById('customUrl').value = `http://test-as1.ams-dev.ru${path}`;
+            document.getElementById('customUrl').value = `https://test-as1.ams-dev.ru${path}`;
             document.getElementById('customMethod').value = method;
             document.getElementById('customBody').value = body;
         } else {
