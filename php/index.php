@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Tester Pro - Расширенное тестирование</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -212,7 +212,8 @@
                                 <label>Тело запроса</label>
                                 <textarea id="builder-body">{"test": "data"}</textarea>
                             </div>
-                            <button id="apply-builder" class="btn btn-info btn-block">
+                            <!-- ЭТОТ ЭЛЕМЕНТ ТЕПЕРЬ ГАРАНТИРОВАННО ПРИСУТСТВУЕТ -->
+                            <button id="applyBuilder" class="btn btn-info btn-block">
                                 <i class="fas fa-check"></i> Применить изменения
                             </button>
                         </div>
@@ -245,6 +246,7 @@
                             <span class="card-icon"><i class="fas fa-bolt"></i></span>
                             Консоль запросов
                         </h2>
+                        <!-- ЭТОТ ЭЛЕМЕНТ ТЕПЕРЬ ГАРАНТИРОВАННО ПРИСУТСТВУЕТ -->
                         <button id="sendRequestBtn" class="btn btn-success">
                             <i class="fas fa-paper-plane"></i> Отправить
                         </button>
@@ -372,6 +374,7 @@
                             Последние запросы
                         </h2>
                         <div>
+                            <!-- ЭТИ ЭЛЕМЕНТЫ ТЕПЕРЬ ГАРАНТИРОВАННО ПРИСУТСТВУЮТ -->
                             <button id="refreshLogsBtn" class="btn" style="margin-right: 10px;">
                                 <i class="fas fa-sync-alt"></i> Обновить
                             </button>
@@ -466,6 +469,6 @@
         <i class="fas fa-bell"></i> <span id="notification-message">Уведомление</span>
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
