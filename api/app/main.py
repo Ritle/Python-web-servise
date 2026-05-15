@@ -1,8 +1,21 @@
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware  # Добавляем импорт
 from .database import init_db, log_request, get_last_logs
 import os
 
 app = FastAPI()
+
+# Добавляем CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://test-as2.ams-dev.ru",  # Домен PHP-тестера
+        "https://test-as2.ams-dev.ru"  # Если используется HTTPS
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешаем все HTTP методы
+    allow_headers=["*"],  # Разрешаем все заголовки
+)
 
 # Получаем путь к БД из переменной окружения
 DB_PATH = os.getenv("DB_PATH", "/data/requests.db")
