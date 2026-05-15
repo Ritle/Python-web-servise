@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const tabName = activeTab.getAttribute('data-tab');
         
         switch(tabName) {
-            case 'process':
+            case 'core':
                 sendProcessRequest();
                 break;
             case '404':
